@@ -1,6 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -34,6 +35,9 @@ public class Main extends Application {
         Button addButton = new Button("Add Car");
 
         Button deleteButton = new Button("Delete selected Car");
+        deleteButton.getStyleClass().add("button-delete");
+
+        Button mockDataButton = new Button("Add mockup data");
 
         //event handling
         addButton.setOnAction(e -> {
@@ -54,11 +58,15 @@ public class Main extends Application {
         deleteButton.setOnAction(e -> {
             String selectedCarString = listView.getSelectionModel().getSelectedItem();
             if (selectedCarString != null) {
-                carList.removeIf(car ->toString().equals(selectedCarString));
+                carList.removeIf(car -> car.toString().equals(selectedCarString));
                 updateListView();
             } else {
                 showAlert("No Selection", "Please select a car to delete.");
             }
+        });
+
+        mockDataButton.setOnAction(e -> {
+            initialize();
         });
 
         //adding components to layout
@@ -71,17 +79,24 @@ public class Main extends Application {
                 addButton,
                 deleteButton,
                 new Label("Cars:"),
-                listView
+                listView,
+                mockDataButton
         );
 
         //scene
-        Scene scene = new Scene(layout, 500, 500);
+        Scene scene = new Scene(layout, 500, 800);
 
         //load css
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 
+        //get icon
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        //set focus on layout to not select any field so prompts are displayed
+        layout.requestFocus();
     }
 
     //method to update list view by iterating over carList
@@ -105,6 +120,17 @@ public class Main extends Application {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    //method for mock up data
+    public void initialize() {
+        // Initialize the carList with some pre-defined cars
+        carList.add(new Car("B:ABC123", "Toyota", "Corolla", 132));
+        carList.add(new Car("B:BCD234", "Honda", "Civic", 158));
+        carList.add(new Car("B:CDE345", "Ford", "Mustang", 450));
+        carList.add(new Car("B:DEF456", "Mercedes", "SL500", 435));
+        carList.add(new Car("B:EFG567", "Opel", "Manta", 81));
+        updateListView();
     }
 
     //launch main
